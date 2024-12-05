@@ -27,6 +27,7 @@ public struct ChatView<Message: ChatMessage, User: ChatUser>: View {
 
     @Binding private var scrollTo: UUID?
     @Binding private var scrollToBottom: Bool
+    @Binding private var scrollToBottomOnAppear: Bool
 
     public var body: some View {
         GeometryReader { geometry in
@@ -98,6 +99,12 @@ public struct ChatView<Message: ChatMessage, User: ChatUser>: View {
                             proxy.scrollTo("bottom")
                         }
                         scrollToBottom = false
+                    }
+                }
+                .onChange(of: scrollToBottomOnAppear) { value in
+                    if value {
+                        proxy.scrollTo("bottom")
+                        scrollToBottomOnAppear = false
                     }
                 }
                 .onChange(of: scrollTo) { value in
@@ -219,6 +226,7 @@ public extension ChatView {
     init(
         messages: Binding<[Message]>,
         scrollToBottom: Binding<Bool> = .constant(false),
+        scrollToBottomOnAppear: Binding<Bool> = .constant(false),
         scrollTo: Binding<UUID?> = .constant(nil),
         dateHeaderTimeInterval: TimeInterval = 3600,
         shouldShowGroupChatHeaders: Bool = false,
@@ -229,6 +237,7 @@ public extension ChatView {
         _messages = messages
         self.inputView = inputView
         _scrollToBottom = scrollToBottom
+        _scrollToBottomOnAppear = scrollToBottomOnAppear
         self.inset = inset
         self.dateFormater.dateStyle = .medium
         self.dateFormater.timeStyle = .short

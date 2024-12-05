@@ -13,6 +13,7 @@ struct AdvancedExampleView: View {
 
     @State var messages: [MessageMocker.ChatMessageItem] = []
     @State private var scrollToBottom = false
+    @State private var scrollToBottomOnAppear = false
 
     @State private var message = ""
 
@@ -23,7 +24,8 @@ struct AdvancedExampleView: View {
     private var chatView: some View {
         ChatView<MessageMocker.ChatMessageItem, MessageMocker.ChatUserItem>(
             messages: $messages,
-            scrollToBottom: $scrollToBottom
+            scrollToBottom: $scrollToBottom,
+            scrollToBottomOnAppear: $scrollToBottomOnAppear
         ) {
             BasicInputView(
                 message: $message,
@@ -32,6 +34,7 @@ struct AdvancedExampleView: View {
                     self.messages.append(
                         .init(user: MessageMocker.sender, messageKind: messageKind, isSender: true)
                     )
+                    scrollToBottomOnAppear = true
                 }
             )
             .background(Color.primary.colorInvert())
@@ -104,6 +107,7 @@ struct AdvancedExampleView: View {
             )
 
             self.messages.append(contentsOf: MessageMocker.generate(count: 53))
+            scrollToBottomOnAppear = true
         }
     }
 }
